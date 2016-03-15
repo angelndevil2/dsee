@@ -1,4 +1,4 @@
-# Universal Jvm Agent
+# DSee Agent
 
 jvm inspection agent
 
@@ -15,7 +15,7 @@ can be used with HOTSPOT jvm
 
 * check running jvm's ___pid___
 * edit /path/to/dsee/bin/launcher
-    * export UNIVERSAL_JVM_AGENT_OPTS=-Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
+    * export DSEE_OPTS=-Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
 * command
 ```
 /path/to/dsee/bin/launcher -p pid
