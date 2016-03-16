@@ -1,10 +1,11 @@
 package com.github.angelndevil2.dsee.server;
 
+import lombok.Getter;
+
 import javax.management.*;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -15,6 +16,7 @@ public class MBeanServer implements Serializable {
     private static final long serialVersionUID = -680104697021234725L;
 
     private transient WeakReference<javax.management.MBeanServer> server;
+    @Getter
     private final String serverId;
 
     public MBeanServer(javax.management.MBeanServer server) {
@@ -60,17 +62,6 @@ public class MBeanServer implements Serializable {
     }
 
     private javax.management.MBeanServer getMBeanServer() throws NullPointerException {
-        javax.management.MBeanServer server = this.server.get();
-        if (server == null)
-            return reStoreMBeanServer();
-        return server;
-    }
-
-    private javax.management.MBeanServer reStoreMBeanServer() throws NullPointerException {
-        ArrayList< javax.management.MBeanServer> list = MBeanServerFactory.findMBeanServer(serverId);
-        if (list == null || list.size() < 1) throw new NullPointerException("mbean server is not exist.");
-
-        server = new WeakReference<javax.management.MBeanServer>(list.get(0));
-        return list.get(0);
+        return this.server.get();
     }
 }

@@ -108,6 +108,7 @@ task bootStrapJar(type:Jar, dependsOn:compileJava) {
     }
     from (sourceSets.main.output) {
         include "com/github/angelndevil2/dsee/Bootstrap.class"
+        include "com/github/angelndevil2/dsee/Bootstrap\$WasContextThread.class"
     }
 }
 

@@ -1,15 +1,15 @@
 package com.github.angelndevil2.dsee.server;
 
+import com.github.angelndevil2.dsee.Bootstrap;
 import com.github.angelndevil2.dsee.util.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.management.*;
 import javax.management.MBeanServer;
-import javax.naming.InitialContext;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author k, Created on 16. 2. 22.
@@ -18,7 +18,7 @@ import java.util.Set;
 public class MBeanServerFactory implements Serializable {
 
     private static final long serialVersionUID = -2881069740095622627L;
-    private transient final HashMap<String, com.github.angelndevil2.dsee.server.MBeanServer> servers
+    private final HashMap<String, com.github.angelndevil2.dsee.server.MBeanServer> servers
             = new HashMap<String, com.github.angelndevil2.dsee.server.MBeanServer>();
 
     public MBeanServerFactory() {
@@ -30,8 +30,12 @@ public class MBeanServerFactory implements Serializable {
      * @param agentId
      * @return
      */
-    public static ArrayList<MBeanServer> findMBeanServer(final String agentId) {
-        return javax.management.MBeanServerFactory.findMBeanServer(agentId);
+    public ArrayList<com.github.angelndevil2.dsee.server.MBeanServer> findMBeanServer(final String agentId) {
+        restoreMBeanServers();
+        if (agentId == null) {
+            return newArrayList(servers.values());
+        }
+        return newArrayList(servers.get(agentId));
     }
 
     /**
@@ -41,8 +45,8 @@ public class MBeanServerFactory implements Serializable {
     @SuppressWarnings("unchecked")
     public ArrayList<String> getAllMBeanServerId() {
         ArrayList<String> ids = new ArrayList<String>();
-        for (MBeanServer ms : findMBeanServer(null)) {
-            ids.add(getMBeanServerId(ms));
+        for (com.github.angelndevil2.dsee.server.MBeanServer ms : findMBeanServer(null)) {
+            ids.add(ms.getServerId());
         }
 
         return ids;
@@ -155,7 +159,7 @@ public class MBeanServerFactory implements Serializable {
     getMBeanServer(final String serverId) throws InstanceNotFoundException {
         com.github.angelndevil2.dsee.server.MBeanServer server = servers.get(serverId);
         if (server == null) {
-            ArrayList<MBeanServer> list = MBeanServerFactory.findMBeanServer(serverId);
+            ArrayList<com.github.angelndevil2.dsee.server.MBeanServer> list = findMBeanServer(serverId);
             if (list == null || list.size() < 1) {
                 servers.remove(serverId);
                 throw new InstanceNotFoundException("mbean server(" + serverId + ") is not exist.");
@@ -163,14 +167,14 @@ public class MBeanServerFactory implements Serializable {
             if (list.size() > 1) {
                 log.debug("{} has more than one mbean server. is it possible?", serverId);
             }
-            server = new com.github.angelndevil2.dsee.server.MBeanServer(list.get(0));
+            server = list.get(0);
             servers.put(serverId, server);
         }
         return server;
     }
 
-    public void restoreMBeanServers() {
-        for (MBeanServer ms : findMBeanServer(null)) {
+    private void restoreMBeanServers() {
+        for (MBeanServer ms : javax.management.MBeanServerFactory.findMBeanServer(null)) {
             servers.put(getMBeanServerId(ms),
                     new com.github.angelndevil2.dsee.server.MBeanServer(ms));
         }
@@ -190,24 +194,17 @@ public class MBeanServerFactory implements Serializable {
                 }
                 if (registered) break;
             }
-            //
-            // TODO we boot strapped, so class loader is not access web logic class. weblogic.jndi.WLInitialContextFactory
-            //
-            // javax.naming.NoInitialContextException: Cannot instantiate class: weblogic.jndi.WLInitialContextFactory
-            //
-            if (!registered) {
-                try {
-                    InitialContext context = new InitialContext();
-                    MBeanServer server = (MBeanServer) context.lookup("java:comp/jmx/runtime");
-                    if (server == null) server = (MBeanServer) context.lookup("java:comp/env/jmx/runtime");
-                    if (server != null) {
 
-                        log.debug("mbean server found for webLogic with context lookup");
-                        servers.put(getMBeanServerId(server),
-                                new com.github.angelndevil2.dsee.server.MBeanServer(server));
-                    }
+            if (!registered) {
+
+                try {
+
+                    MBeanServer ms = Bootstrap.getWasMBeanServer();
+                    servers.put(getMBeanServerId(ms),
+                            new com.github.angelndevil2.dsee.server.MBeanServer(ms));
 
                 } catch (Throwable t) {
+
                     log.debug("context lookup failed. sure webLogic ?", t);
                 }
             }

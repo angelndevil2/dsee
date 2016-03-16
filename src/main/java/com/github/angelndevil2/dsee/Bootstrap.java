@@ -1,5 +1,9 @@
 package com.github.angelndevil2.dsee;
 
+import lombok.Getter;
+
+import javax.management.MBeanServer;
+import javax.naming.InitialContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -10,11 +14,73 @@ import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author k, Created on 16. 2. 29.
  */
 public class Bootstrap {
+
+    /**
+     * save for latter use, original system class loader
+     */
+    @Getter
+    private static ClassLoader orginalSystemClassLoader;
+    /**
+     * save for latter use, our bootstrapped class loader
+     */
+    @Getter
+    private static ClassLoader bootstrapClassLoader;
+
+    /**
+     * Thread to find separated mbean server by Was
+     */
+    private static final WasContextThread wasContextThread = new WasContextThread();
+
+    private static class WasContextThread extends Thread {
+
+        private final ArrayBlockingQueue<String> q = new ArrayBlockingQueue<String>(1);
+        @Getter
+        private MBeanServer ms;
+
+        @Override
+        public void run() {
+
+            boolean found = false;
+
+            while (!found) {
+
+                try {
+                    InitialContext context = new InitialContext();
+                    MBeanServer server = (MBeanServer) context.lookup("java:comp/jmx/runtime");
+                    if (server == null) server = (MBeanServer) context.lookup("java:comp/env/jmx/runtime");
+                    if (server != null) {
+
+                        System.out.println("mbean server found for webLogic with context lookup");
+                        ms = server;
+                        found = true;
+                    }
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            while (found) {
+                try {
+                    q.take();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     /**
      * used with -javaagent:
@@ -49,8 +115,20 @@ public class Bootstrap {
         }
     }
 
+    public static MBeanServer getWasMBeanServer() {
+        return wasContextThread.getMs();
+    }
+
     @SuppressWarnings("unchecked")
     private static void bootStrap(String options) throws IOException, NullPointerException {
+
+        // find separated mbean server by was
+        wasContextThread.setDaemon(true);
+        wasContextThread.start();
+
+        // save original system class loader
+        orginalSystemClassLoader = ClassLoader.getSystemClassLoader();
+
         //
         // Bootstrap
         //
@@ -65,17 +143,17 @@ public class Bootstrap {
         }
 
         // feed your URLs to a URLClassLoader!
-        ClassLoader classloader =
+        bootstrapClassLoader =
                 new URLClassLoader(
                         urls.toArray(new URL[1]),
-                        ClassLoader.getSystemClassLoader().getParent());
+                        orginalSystemClassLoader.getParent());
 
         // well-behaved Java packages work relative to the
         // context classloader.  Others don't (like commons-logging)
-        Thread.currentThread().setContextClassLoader(classloader);
+        Thread.currentThread().setContextClassLoader(bootstrapClassLoader);
 
         try {
-           Class agent = Class.forName("com.github.angelndevil2.dsee.Agent", false, classloader);
+           Class agent = Class.forName("com.github.angelndevil2.dsee.Agent", false, bootstrapClassLoader);
             Object i = agent.newInstance();
             agent.getMethod("runAgent", String.class).invoke(i, options);
         } catch (ClassNotFoundException e) {
