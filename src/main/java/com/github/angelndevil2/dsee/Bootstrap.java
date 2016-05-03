@@ -26,7 +26,7 @@ public class Bootstrap {
      * save for latter use, original system class loader
      */
     @Getter
-    private static ClassLoader orginalSystemClassLoader;
+    private static ClassLoader originalSystemClassLoader;
     /**
      * save for latter use, our bootstrapped class loader
      */
@@ -62,7 +62,7 @@ public class Bootstrap {
                         found = true;
                     }
                 } catch (Throwable t) {
-                    t.printStackTrace();
+                    //t.printStackTrace();
                 }
 
                 try {
@@ -127,7 +127,7 @@ public class Bootstrap {
         wasContextThread.start();
 
         // save original system class loader
-        orginalSystemClassLoader = ClassLoader.getSystemClassLoader();
+        originalSystemClassLoader = ClassLoader.getSystemClassLoader();
 
         //
         // Bootstrap
@@ -146,7 +146,7 @@ public class Bootstrap {
         bootstrapClassLoader =
                 new URLClassLoader(
                         urls.toArray(new URL[1]),
-                        orginalSystemClassLoader.getParent());
+                        originalSystemClassLoader.getParent());
 
         // well-behaved Java packages work relative to the
         // context classloader.  Others don't (like commons-logging)
