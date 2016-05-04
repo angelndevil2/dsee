@@ -30,7 +30,7 @@ can be used with HOTSPOT jvm
 
 * file : __/path/to/dsee/conf/jetty.properties__
 * default port : 1080
-    * property : http.port 
+    * property : http.port
 
 ## logback.xml
 
@@ -43,3 +43,5 @@ can be used with HOTSPOT jvm
 * developed with weblogic 12c
 * mbean developed with websphere 8.5.5.8
 * not fully tested
+
+##
