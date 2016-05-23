@@ -7,7 +7,7 @@ jvm inspection agent
 ### Load when jvm start
 
 ```
-use -javaagent:/path/to/dsee/dsee-version.jar
+use -javaagent:/path/to/dsee/dsee-version-bootstrap.jar
 ```
 ### Load to running jvm
 
@@ -43,5 +43,3 @@ can be used with HOTSPOT jvm
 * developed with weblogic 12c
 * mbean developed with websphere 8.5.5.8
 * not fully tested
-
-#
