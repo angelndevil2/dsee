@@ -69,8 +69,8 @@ jar {
         attributes('Implementation-Title':'com.github.angelndevil2'+"."+module.name,
                 'Implementation-Version': version,
                 'Created-By': 'angelndevil2',
-                'Premain-Class': 'com.github.angelndevil2.dsee.Bootstrap',
-                'Agent-Class': 'com.github.angelndevil2.dsee.Bootstrap',
+                //'Premain-Class': 'com.github.angelndevil2.dsee.Bootstrap',
+                //'Agent-Class': 'com.github.angelndevil2.dsee.Bootstrap',
                 'Main-Class': 'com.github.angelndevil2.dsee.Launcher',
                 //'Boot-Class-Path': 'dsee'+"-"+version+".jar"
                 //'Class-Path': 'dsee'+"-"+version+".jar"
@@ -78,7 +78,7 @@ jar {
         )
     }
 
-    //exclude "com/github/angelndevil2/dsee/Bootstrap.class"
+    exclude "com/github/angelndevil2/dsee/Bootstrap*.class"
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -123,6 +123,7 @@ distZip {
      * exclude from zip and use start up jvm option -Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
      */
     exclude 'tools.jar'
+    exclude 'generated'
     //include 'dsee-'+version+"-bootstrap.jar"
     dependsOn bootStrapJar
 }
@@ -132,6 +133,7 @@ distTar {
      * exclude from tar and use start up jvm option -Xbootclasspath/a:<path_to_jdk>/lib/tools.jar
      */
     exclude 'tools.jar'
+    exclude 'generated'
     dependsOn bootStrapJar
 }
 
