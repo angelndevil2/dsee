@@ -38,6 +38,9 @@ public class Bootstrap {
      */
     private static final WasContextThread wasContextThread = new WasContextThread();
 
+    /**
+     * TODO make separated class & find other was's MBeanServer & exit thread when MBeanServer found
+     */
     private static class WasContextThread extends Thread {
 
         private final ArrayBlockingQueue<String> q = new ArrayBlockingQueue<String>(1);

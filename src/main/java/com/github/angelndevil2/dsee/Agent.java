@@ -34,7 +34,8 @@ public class Agent {
      *
      * {@link JettyServer} start
      */
-    public void startServer() {
+    private void startServer() {
+        // if not mbean server created. create it!
         ManagementFactory.getPlatformMBeanServer();
         server = new JettyServer();
         server.run();
@@ -49,7 +50,7 @@ public class Agent {
         log.debug("embedded jetty server stopped.");
     }
 
-    public static void reloadLogger() {
+    private static void reloadLogger() {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         ContextInitializer ci = new ContextInitializer(loggerContext);
@@ -66,7 +67,7 @@ public class Agent {
         //StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
     }
 
-    public static void loadLogbackConfiguration() {
+    private static void loadLogbackConfiguration() {
         System.setProperty("logback.configurationFile", PropertiesUtil.getConfDir()+File.separator+PropertiesUtil.LogbackConfig);
         reloadLogger();
     }
