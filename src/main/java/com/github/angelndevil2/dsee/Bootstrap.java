@@ -179,7 +179,7 @@ public class Bootstrap {
      * @throws IllegalStateException If the specified class was loaded from a directory or in some other way (such as via HTTP, from a database, or some
      *                               other custom classloading device).
      */
-    public static String findPathJar(Class<?> context) throws IllegalStateException {
+    static String findPathJar(Class<?> context) throws IllegalStateException {
         if (context == null) context = Bootstrap.class;
         String rawName = context.getName();
         String classFileName;
