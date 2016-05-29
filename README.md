@@ -43,3 +43,9 @@ can be used with HOTSPOT jvm
 * developed with weblogic 12c
 * mbean developed with websphere 8.5.5.8
 * not fully tested
+
+## TODO
+
+* manual
+* bci to monitor was service
+* refer to wiki or intro web
