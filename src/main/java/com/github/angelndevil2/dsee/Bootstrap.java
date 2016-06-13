@@ -139,10 +139,16 @@ public class Bootstrap {
         // add jar file url
         ArrayList<URL> urls = new ArrayList<URL>();
 
-        String jarName = findPathJar(null);
-        File[] files = new File(jarName.substring(0, jarName.lastIndexOf("/"))).listFiles();
-        for (File f : files) {
-            urls.add(f.getAbsoluteFile().toURI().toURL());
+        try {
+            String jarName = findPathJar(null);
+            File[] files = new File(jarName.substring(0, jarName.lastIndexOf("/"))).listFiles();
+            if (files == null) return;
+            for (File f : files) {
+                urls.add(f.getAbsoluteFile().toURI().toURL());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
         }
 
         // feed your URLs to a URLClassLoader!
