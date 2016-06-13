@@ -5,7 +5,6 @@ import lombok.Getter;
 import javax.management.*;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
-import java.rmi.RemoteException;
 import java.util.Set;
 
 /**
