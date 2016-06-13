@@ -29,7 +29,6 @@ public class MBeanServer implements Serializable {
      * @param name object name
      * @param queryExp
      * @return object name set
-     * @throws RemoteException
      */
     public Set<ObjectName> queryNames(final ObjectName name, final QueryExp queryExp) {
         return getMBeanServer().queryNames(name, queryExp);
@@ -37,7 +36,6 @@ public class MBeanServer implements Serializable {
 
     /**
      * @return domain string array
-     * @throws RemoteException
      */
     public String[] getDomains() {
         return getMBeanServer().getDomains();
