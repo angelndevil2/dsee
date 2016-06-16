@@ -8,6 +8,8 @@ import java.lang.ref.WeakReference;
 import java.util.Set;
 
 /**
+ * {@link javax.management.MBeanServer} Wrapper
+ *
  * @author k, Created on 16. 2. 22.
  */
 public class MBeanServer implements Serializable {

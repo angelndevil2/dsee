@@ -116,7 +116,7 @@ public class MBeanServerFactory implements Serializable {
      * @param aMBeanServer MBeanServer whose Server ID/Agent ID is desired.
      * @return MBeanServerId/Agent ID of provided MBeanServer.
      */
-    public static String getMBeanServerId(final MBeanServer aMBeanServer)
+    static String getMBeanServerId(final MBeanServer aMBeanServer)
     {
         String serverId = null;
         final String SERVER_DELEGATE = "JMImplementation:type=MBeanServerDelegate";

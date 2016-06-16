@@ -66,7 +66,9 @@ public class JettyServer implements Runnable, Serializable {
                         append(",").
                         append(MBeanInfo.class.getCanonicalName()).
                         append(",").
-                        append(MBean.class.getCanonicalName()).toString()
+                        append(MBean.class.getCanonicalName()).
+                        append(",").
+                        append(ThreadList.class.getCanonicalName()).toString()
                 );
 
         // Add the ResourceHandler to the server.

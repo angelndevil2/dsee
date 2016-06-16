@@ -4,6 +4,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
+import com.github.angelndevil2.dsee.context.MBeanContext;
 import com.github.angelndevil2.dsee.jetty.JettyServer;
 import com.github.angelndevil2.dsee.server.MBeanServerFactory;
 import com.github.angelndevil2.dsee.util.PropertiesUtil;
@@ -27,6 +28,8 @@ public class Agent {
 
     private static JettyServer server;
     @Getter
+    private static final MBeanContext beanContext = MBeanContext.getInstance();
+    @Getter
     private static final MBeanServerFactory factory = new MBeanServerFactory();
 
     /**
@@ -35,8 +38,7 @@ public class Agent {
      * {@link JettyServer} start
      */
     private void startServer() {
-        // if not mbean server created. create it!
-        ManagementFactory.getPlatformMBeanServer();
+
         server = new JettyServer();
         server.run();
         log.debug("embedded server started.");
@@ -72,6 +74,12 @@ public class Agent {
         reloadLogger();
     }
 
+    private void setPlatformMXBeans() {
+        // if not mbean server created. create it!
+        ManagementFactory.getPlatformMBeanServer();
+        beanContext.setThreadMXBean(ManagementFactory.getThreadMXBean());
+    }
+
     public void runAgent(String options) throws IOException {
 
         String jarName = Bootstrap.findPathJar(Agent.class);
@@ -79,6 +87,8 @@ public class Agent {
 
         if (Boolean.valueOf(PropertiesUtil.getProperties().getProperty("logback.use"))) loadLogbackConfiguration();
 
+        setPlatformMXBeans();
         startServer();
     }
+
 }
