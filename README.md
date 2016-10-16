@@ -47,5 +47,5 @@ can be used with HOTSPOT jvm
 ## TODO
 
 * manual
-* bci to monitor was service
+* bci to monitor WAS service
 * refer to wiki or intro web
