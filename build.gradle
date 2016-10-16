@@ -21,7 +21,7 @@ repositories {
 }
 
 startScripts {
-    classpath = files("*")
+    //classpath = files("*")
 }
 
 configurations {
