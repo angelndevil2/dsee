@@ -48,4 +48,4 @@ can be used with HOTSPOT jvm
 
 * manual
 * bci to monitor was service
-* refer to wiki or intro web
+* refer to wiki or intro web.
