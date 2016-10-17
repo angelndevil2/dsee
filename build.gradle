@@ -53,6 +53,8 @@ dependencies {
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.github.angelndevil2:xii4j:0.1.0'
+    // https://mvnrepository.com/artifact/org.ow2.asm/asm
+    compile group: 'org.ow2.asm', name: 'asm', version: '5.1'
 
 
     compile 'org.slf4j:jcl-over-slf4j:1.7.16'

@@ -23,11 +23,11 @@ public class JVMUtil {
         return returnPath(System.getProperty(CLASS_PATH));
     }
 
-    public static String[] getExtPaths() {
+    public static String[] getExtPath() {
         return returnPath(System.getProperty(EXT_PATHS));
     }
 
-    public static String[] getEndorsedPaths() {
+    public static String[] getEndorsedPath() {
         return returnPath(System.getProperty(ENDORSED_PATHS));
     }
 

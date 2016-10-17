@@ -16,11 +16,10 @@ import java.io.UnsupportedEncodingException;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @since 1.4.0
  *
  * Created by k on 16. 10. 17.
  */
-public class JVMPathTest {
+public class ClassFilesTest {
 
     static Jetty jetty = new Jetty();
     static HttpClient client = new HttpClient();
@@ -38,20 +37,19 @@ public class JVMPathTest {
     }
 
     @Test
-    public void getClassPath() throws Exception {
+    public void getClassFiles() throws Exception {
 
         exchange.reset();
-        exchange.setURL("http://localhost:"+jetty.getPort()+"/path/class");
+        exchange.setURL("http://localhost:"+jetty.getPort()+"/class-files/class-path");
 
         client.send(exchange);
 
         // Waits until the exchange is terminated
         int exchangeState = exchange.waitForDone();
 
-        if (exchangeState == HttpExchange.STATUS_COMPLETED) {
-            assertEquals(200, exchange.getResponseStatus());
-            System.out.println(exchange.getResponseContent());
-        }
+        if (exchangeState == HttpExchange.STATUS_COMPLETED) print();
+
+        exchange.reset();
     }
 
     @Test
@@ -65,11 +63,7 @@ public class JVMPathTest {
         // Waits until the exchange is terminated
         int exchangeState = exchange.waitForDone();
 
-        if (exchangeState == HttpExchange.STATUS_COMPLETED) {
-
-            assertEquals(200, exchange.getResponseStatus());
-            System.out.println(exchange.getResponseContent());
-        }
+        if (exchangeState == HttpExchange.STATUS_COMPLETED) print();
 
         exchange.reset();
     }
@@ -78,18 +72,16 @@ public class JVMPathTest {
     public void getEndorsedClassPath() throws Exception {
 
         exchange.reset();
-        exchange.setURL("http://localhost:"+jetty.getPort()+"/path/endorsed");
+        exchange.setURL("http://localhost:"+jetty.getPort()+"/class-files/endorsed");
 
         client.send(exchange);
 
         // Waits until the exchange is terminated
         int exchangeState = exchange.waitForDone();
 
-        if (exchangeState == HttpExchange.STATUS_COMPLETED) {
+        if (exchangeState == HttpExchange.STATUS_COMPLETED) print();
 
-            assertEquals(200, exchange.getResponseStatus());
-            System.out.println(exchange.getResponseContent());
-        }
+        exchange.reset();
 
     }
 
@@ -97,17 +89,31 @@ public class JVMPathTest {
     public void getExtClassPath() throws Exception {
 
         exchange.reset();
-        exchange.setURL("http://localhost:"+jetty.getPort()+"/path/ext");
+        exchange.setURL("http://localhost:"+jetty.getPort()+"/class-files/ext");
 
         client.send(exchange);
 
         // Waits until the exchange is terminated
         int exchangeState = exchange.waitForDone();
 
-        if (exchangeState == HttpExchange.STATUS_COMPLETED) {
-            assertEquals(200, exchange.getResponseStatus());
-            System.out.println(exchange.getResponseContent());
-        }
+        if (exchangeState == HttpExchange.STATUS_COMPLETED) print();
+
+        exchange.reset();
     }
 
+    private void print() throws UnsupportedEncodingException, ParseException {
+        assertEquals(200, exchange.getResponseStatus());
+
+        JSONParser parser = new JSONParser();
+
+        JSONObject ja = (JSONObject) parser.parse(exchange.getResponseContent());
+
+        for (Object k : ja.keySet()) {
+            System.out.println("-------------------------------------");
+            System.out.println(k);
+            System.out.println("-------------------------------------");
+            for (Object o : (JSONArray)ja.get(k)) System.out.println("\t"+o);
+            System.out.println("-------------------------------------");
+        }
+    }
 }

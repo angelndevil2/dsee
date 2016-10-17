@@ -10,8 +10,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static com.github.angelndevil2.dsee.util.JVMUtil.*;
-
 /**
  * response path of classes related with jvm path properties
  *
@@ -44,7 +42,7 @@ public class PathInfo {
     @Produces(MediaType.APPLICATION_JSON+ ";charset=utf-8")
     public Response endorsed() {
         Gson gson = new GsonBuilder().serializeNulls().create();
-        return Response.status(200).entity(gson.toJson(JVMUtil.getEndorsedPaths())).build();
+        return Response.status(200).entity(gson.toJson(JVMUtil.getEndorsedPath())).build();
     }
 
     @GET
@@ -52,6 +50,6 @@ public class PathInfo {
     @Produces(MediaType.APPLICATION_JSON+ ";charset=utf-8")
     public Response ext() {
         Gson gson = new GsonBuilder().serializeNulls().create();
-        return Response.status(200).entity(gson.toJson(JVMUtil.getExtPaths())).build();
+        return Response.status(200).entity(gson.toJson(JVMUtil.getExtPath())).build();
     }
 }
