@@ -72,6 +72,8 @@ public class JettyServer implements Runnable, Serializable {
                         append(",").
                         append(ClassFiles.class.getCanonicalName()).
                         append(",").
+                        append(SearchClass.class.getCanonicalName()).
+                        append(",").
                         append(PathInfo.class.getCanonicalName()).toString()
                 );
 

@@ -1,5 +1,6 @@
 package com.github.angelndevil2.dsee;
 
+import com.github.angelndevil2.dsee.iface.IClassInspector;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  * Created by k on 16. 10. 17.
  */
 @Slf4j
-public class ClassInspector extends ClassVisitor implements JSONAware {
+public class ClassInspector extends ClassVisitor implements IClassInspector {
 
     public class InspectedMethod implements JSONAware {
 
@@ -57,8 +58,10 @@ public class ClassInspector extends ClassVisitor implements JSONAware {
         }
     }
 
-    public ClassInspector(byte[] classBytes) {
+    public ClassInspector(String category, String fname, byte[] classBytes) {
         this(Opcodes.ASM5);
+        this.category = category;
+        this.fileName = fname;
         ClassReader classReader = new ClassReader(classBytes);
         classReader.accept(this, 0);
     }
@@ -97,5 +100,9 @@ public class ClassInspector extends ClassVisitor implements JSONAware {
 
     @Getter
     private String name;
+    @Getter
+    private String fileName;
+    @Getter
+    private String category;
     private ArrayList<InspectedMethod> methods = new ArrayList<InspectedMethod>();
 }

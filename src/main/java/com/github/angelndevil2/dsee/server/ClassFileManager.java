@@ -1,18 +1,24 @@
 package com.github.angelndevil2.dsee.server;
 
-import com.github.angelndevil2.dsee.ClassInspector;
 import com.github.angelndevil2.dsee.DseeException;
 import com.github.angelndevil2.dsee.dstruct.ClassList;
+import com.github.angelndevil2.dsee.dstruct.ClassSearchResult;
+import com.github.angelndevil2.dsee.iface.IClassDb;
+import com.github.angelndevil2.dsee.iface.IClassList;
+import com.github.angelndevil2.dsee.iface.IClassSearchResult;
 import com.github.angelndevil2.dsee.util.FileUtil;
 import com.github.angelndevil2.dsee.util.JVMUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import static com.github.angelndevil2.dsee.dstruct.ClassList.*;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -21,7 +27,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author  k on 16. 10. 17.
  */
 @Slf4j
-public class ClassFileManager {
+public class ClassFileManager implements IClassDb {
 
     public ClassFileManager() {
         setBootClasses();
@@ -30,8 +36,26 @@ public class ClassFileManager {
         setExtClasses();
     }
 
+    @Override
+    public IClassSearchResult findName(String name) {
+
+        IClassSearchResult result = new ClassSearchResult();
+        for (String key : classes.keySet()) {
+            result.add(classes.get(key).findName(name));
+        }
+        return result;
+    }
+
     /**
-     * get class fiile name from path.
+     * @return JSON text
+     */
+    @Override
+    public String toJSONString() {
+        return JSONObject.toJSONString(classes);
+    }
+
+    /**
+     * get class file name from path.
      *
      * <ul>
      *     <li>
@@ -87,36 +111,44 @@ public class ClassFileManager {
 
     private void setBootClasses() {
         for (String path : JVMUtil.getBootClassPath()) {
-            putClassInspectorFromPathToClassList(path, bootClasses);
+            putClassInspectorFromPathToClassList(IClassList.BOOT_CLASS, path, bootClasses);
         }
+
+        classes.put(BOOT_CLASS, bootClasses);
     }
 
     private void setUserClasses() {
         for (String path : JVMUtil.getClassPath()) {
-            putClassInspectorFromPathToClassList(path, userClasses);
+            putClassInspectorFromPathToClassList(IClassList.USER_CLASS, path, userClasses);
         }
+
+        classes.put(USER_CLASS, userClasses);
     }
 
     private void setEndorsedClasses() {
         for (String path : JVMUtil.getEndorsedPath()) {
-            putClassInspectorFromPathToClassList(path, endorsedClasses);
+            putClassInspectorFromPathToClassList(IClassList.ENDORSED_CLASS, path, endorsedClasses);
         }
+
+        classes.put(ENDORSED_CLASS, endorsedClasses);
     }
 
     private void setExtClasses() {
         for (String path : JVMUtil.getExtPath()) {
-            putClassInspectorFromPathToClassList(path, extClasses);
+            putClassInspectorFromPathToClassList(IClassList.EXT_CLASS, path, extClasses);
         }
+
+        classes.put(EXT_CLASS, extClasses);
     }
 
-    private void putClassInspectorFromPathToClassList(String path, ClassList map) {
+    private void putClassInspectorFromPathToClassList(String category, String path, IClassList map) {
         File file = new File(path);
 
         if (file.exists()) {
             if (!file.isDirectory() && file.getName().endsWith(".jar")) { // if jar
 
                 try {
-                    FileUtil.putClassInspectorFromJarPathToClassList(path, map);
+                    FileUtil.putClassInspectorFromJarPathToClassList(category, path, map);
                 } catch (DseeException e) {
                     log.error("error while read {}.\n{}", path, e);
                 }
@@ -124,7 +156,7 @@ public class ClassFileManager {
             } else if (file.isDirectory()) { // if dir
 
                 try {
-                    FileUtil.putClassInspectorFromDirectoryToClassList(path, map);
+                    FileUtil.putClassInspectorFromDirectoryToClassList(category, path, map);
                 } catch (DseeException e) {
                     log.error("error while read {}.\n{}", path, e);
                 }
@@ -132,31 +164,23 @@ public class ClassFileManager {
         }
     }
 
-    /**
-     * key : file name
-     * value : {@link ClassInspector}
-     */
     @Getter
 
-    private ClassList bootClasses = new ClassList();
-    /**
-     * key : file name
-     * value : {@link ClassInspector}
-     */
+    private IClassList bootClasses = new ClassList(IClassList.BOOT_CLASS);
     @Getter
 
-    private ClassList userClasses = new ClassList();
-    /**
-     * key : file name
-     * value : {@link ClassInspector}
-     */
+    private IClassList userClasses = new ClassList(IClassList.USER_CLASS);
     @Getter
 
-    private ClassList endorsedClasses = new ClassList();
+    private IClassList endorsedClasses = new ClassList(IClassList.ENDORSED_CLASS);
+    @Getter
+    private IClassList extClasses = new ClassList(IClassList.EXT_CLASS);
+
     /**
-     * key : file name
-     * value : {@link ClassInspector}
+     * key : {@link IClassList#BOOT_CLASS}, {@link IClassList#EXT_CLASS}, {@link IClassList#USER_CLASS}, {@link IClassList#ENDORSED_CLASS}
+     * value : {@link IClassList}
      */
     @Getter
-    private ClassList extClasses = new ClassList();
+    private HashMap<String, IClassList> classes = new HashMap<String, IClassList>();
+
 }
