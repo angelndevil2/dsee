@@ -50,6 +50,7 @@ can be used with HOTSPOT jvm
 * bci to monitor WAS service
 * refer to wiki or intro web
 
+## LICENSE
 ```
     Copyright 2016 angelndevil2
     
