@@ -1,19 +1,22 @@
 package com.github.angelndevil2.dsee.servlet;
 
+import com.github.angelndevil2.dsee.ClassInspector;
 import com.github.angelndevil2.dsee.context.GlobalContext;
 import com.github.angelndevil2.dsee.server.ClassFileManager;
 import com.github.angelndevil2.dsee.util.JVMUtil;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
+import java.util.Map;
 
 
 /**
@@ -35,21 +38,11 @@ public class ClassFiles {
      * Map&lt;jar_file_or_path_name, class_file_name_array&gt;
      */
     @GET
-    @Path("class-path")
+    @Path("user")
     @Produces(MediaType.APPLICATION_JSON+ ";charset=utf-8")
     public Response classes() {
 
-        Gson gson = new GsonBuilder().serializeNulls().create();
-
-        ArrayListMultimap<String, String> ret = ArrayListMultimap.create();
-
-        for (String path : JVMUtil.getClassPath()) {
-            for (String name : classFileManager.getClassFileNames(path)) {
-                ret.put(path, name);
-            }
-        }
-
-        return Response.status(200).entity(gson.toJson(ret.asMap())).build();
+        return Response.status(200).entity(classFileManager.getUserClasses().toJSONString()).build();
     }
 
     /**
@@ -61,17 +54,7 @@ public class ClassFiles {
     @Path("boot")
     @Produces(MediaType.APPLICATION_JSON+ ";charset=utf-8")
     public Response boot() {
-        Gson gson = new GsonBuilder().serializeNulls().create();
-
-        ArrayListMultimap<String, String> ret = ArrayListMultimap.create();
-
-        for (String path : JVMUtil.getBootClassPath()) {
-            for (String name : classFileManager.getClassFileNames(path)) {
-                ret.put(path, name);
-            }
-        }
-
-        return Response.status(200).entity(gson.toJson(ret.asMap())).build();
+        return Response.status(200).entity(classFileManager.getBootClasses().toJSONString()).build();
     }
 
     /**
@@ -83,17 +66,7 @@ public class ClassFiles {
     @Path("endorsed")
     @Produces(MediaType.APPLICATION_JSON+ ";charset=utf-8")
     public Response endorsed() {
-        Gson gson = new GsonBuilder().serializeNulls().create();
-
-        ArrayListMultimap<String, String> ret = ArrayListMultimap.create();
-
-        for (String path : JVMUtil.getEndorsedPath()) {
-            for (String name : classFileManager.getClassFileNames(path)) {
-                ret.put(path, name);
-            }
-        }
-
-        return Response.status(200).entity(gson.toJson(ret.asMap())).build();
+        return Response.status(200).entity(classFileManager.getEndorsedClasses().toJSONString()).build();
     }
 
     /**
@@ -105,16 +78,6 @@ public class ClassFiles {
     @Path("ext")
     @Produces(MediaType.APPLICATION_JSON+ ";charset=utf-8")
     public Response ext() {
-        Gson gson = new GsonBuilder().serializeNulls().create();
-
-        ArrayListMultimap<String, String> ret = ArrayListMultimap.create();
-
-        for (String path : JVMUtil.getExtPath()) {
-            for (String name : classFileManager.getClassFileNames(path)) {
-                ret.put(path, name);
-            }
-        }
-
-        return Response.status(200).entity(gson.toJson(ret.asMap())).build();
+        return Response.status(200).entity(classFileManager.getExtClasses().toJSONString()).build();
     }
 }

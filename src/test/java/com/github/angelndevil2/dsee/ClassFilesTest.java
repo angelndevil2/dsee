@@ -40,7 +40,7 @@ public class ClassFilesTest {
     public void getClassFiles() throws Exception {
 
         exchange.reset();
-        exchange.setURL("http://localhost:"+jetty.getPort()+"/class-files/class-path");
+        exchange.setURL("http://localhost:"+jetty.getPort()+"/class-files/user");
 
         client.send(exchange);
 
