@@ -1,6 +1,6 @@
 package com.github.angelndevil2.dsee.util;
 
-import com.github.angelndevil2.dsee.ClassInspector;
+import com.github.angelndevil2.dsee.server.ClassInspector;
 import com.github.angelndevil2.dsee.DseeException;
 import com.github.angelndevil2.dsee.iface.IClassList;
 

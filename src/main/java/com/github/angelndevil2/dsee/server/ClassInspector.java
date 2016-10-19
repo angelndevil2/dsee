@@ -1,4 +1,4 @@
-package com.github.angelndevil2.dsee;
+package com.github.angelndevil2.dsee.server;
 
 import com.github.angelndevil2.dsee.iface.IClassInspector;
 import lombok.Getter;
@@ -75,7 +75,10 @@ public class ClassInspector extends ClassVisitor implements IClassInspector {
     public JSONObject toJSONObject() {
 
         JSONObject ret = new JSONObject();
-        ret.put(name, methods);
+        ret.put("file", fileName);
+        ret.put("category", category);
+        ret.put("name", name);
+        ret.put("methods", methods);
 
         return ret;
     }
