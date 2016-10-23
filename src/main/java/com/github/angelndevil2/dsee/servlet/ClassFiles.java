@@ -1,7 +1,7 @@
 package com.github.angelndevil2.dsee.servlet;
 
 import com.github.angelndevil2.dsee.context.GlobalContext;
-import com.github.angelndevil2.dsee.server.ClassFileManager;
+import com.github.angelndevil2.dsee.server.clazz.ClassFileManager;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.GET;

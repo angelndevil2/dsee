@@ -1,6 +1,6 @@
 package com.github.angelndevil2.dsee.context;
 
-import com.github.angelndevil2.dsee.server.ClassFileManager;
+import com.github.angelndevil2.dsee.server.clazz.ClassFileManager;
 import lombok.Getter;
 
 /**

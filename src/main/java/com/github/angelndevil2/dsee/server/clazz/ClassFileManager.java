@@ -1,4 +1,4 @@
-package com.github.angelndevil2.dsee.server;
+package com.github.angelndevil2.dsee.server.clazz;
 
 import com.github.angelndevil2.dsee.DseeException;
 import com.github.angelndevil2.dsee.dstruct.ClassList;

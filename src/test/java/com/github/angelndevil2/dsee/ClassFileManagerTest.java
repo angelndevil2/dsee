@@ -1,6 +1,6 @@
 package com.github.angelndevil2.dsee;
 
-import com.github.angelndevil2.dsee.server.ClassFileManager;
+import com.github.angelndevil2.dsee.server.clazz.ClassFileManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

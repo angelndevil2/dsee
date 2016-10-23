@@ -1,4 +1,4 @@
-package com.github.angelndevil2.dsee.server;
+package com.github.angelndevil2.dsee.server.clazz;
 
 import com.github.angelndevil2.dsee.iface.IClassInspector;
 import lombok.Getter;

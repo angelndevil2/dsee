@@ -1,6 +1,6 @@
 package com.github.angelndevil2.dsee.dstruct;
 
-import com.github.angelndevil2.dsee.server.ClassInspector;
+import com.github.angelndevil2.dsee.server.clazz.ClassInspector;
 import com.github.angelndevil2.dsee.iface.IClassInspector;
 import com.github.angelndevil2.dsee.iface.IClassList;
 import com.github.angelndevil2.dsee.iface.IClassSearchResult;
