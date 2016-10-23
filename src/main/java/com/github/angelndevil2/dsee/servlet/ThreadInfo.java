@@ -33,6 +33,18 @@ public class ThreadInfo {
     @Path("dump/{id}")
     @Produces(MediaType.TEXT_PLAIN+ ";charset=utf-8")
     public Response dump(@PathParam("id") long id) {
-        return Response.status(200).entity(manager.dump(id)).build();
+        return Response.status(200).entity(manager.toString(id)).build();
+    }
+
+    /**
+     *
+     * @param id thread id
+     * @return ThreadInfo's JSONString representation
+     */
+    @GET
+    @Path("info/{id}")
+    @Produces(MediaType.APPLICATION_JSON+ ";charset=utf-8")
+    public Response info(@PathParam("id") long id) {
+        return Response.status(200).entity(manager.toJSONString(id)).build();
     }
 }

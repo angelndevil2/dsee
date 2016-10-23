@@ -1,6 +1,7 @@
 package com.github.angelndevil2.dsee.server.thread;
 
 import com.github.angelndevil2.dsee.Agent;
+import com.github.angelndevil2.dsee.dstruct.InfoThread;
 
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
@@ -42,12 +43,42 @@ public class ThreadManager {
     }
 
     /**
-     * dump thread info with thread id
+     * String of thread info with thread id
+     *
+     * @since 0.0.4
      * @param id thread id
      * @return thread info string
      */
-    public String dump(final long id) {
+    public String toString(final long id) {
 
+        ThreadInfo ti = getThreadInfo(id);
+        return (ti == null ? null:ti.toString());
+    }
+
+    /**
+     * JSONString of thread info with thread id
+     *
+     * @since 0.0.4
+     * @param id thread id
+     * @return thread info json string
+     */
+    public String toJSONString(final long id) {
+        ThreadInfo ti = getThreadInfo(id);
+        if (ti == null) return null;
+
+        InfoThread it = new InfoThread(ti);
+        return it.toJSONString();
+    }
+
+
+    /**
+     * get thread info with lock & monitor & stack trace if possible
+     *
+     * @since 0.0.4
+     * @param id thread id
+     * @return thread info with lock & monitor & stack trace if possible
+     */
+    public ThreadInfo getThreadInfo(final long id) {
         ThreadInfo ti = null;
         try {
             ThreadInfo[] t = threadMXBean.getThreadInfo(new long[]{id}, true, true);
@@ -56,6 +87,6 @@ public class ThreadManager {
             ti = threadMXBean.getThreadInfo(id, Integer.MAX_VALUE);
         }
 
-        return (ti == null ? null:ti.toString());
+        return ti;
     }
 }
