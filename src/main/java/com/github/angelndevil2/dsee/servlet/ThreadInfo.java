@@ -4,10 +4,7 @@ import com.github.angelndevil2.dsee.server.thread.ThreadManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -24,16 +21,21 @@ public class ThreadInfo {
     @GET
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON+ ";charset=utf-8")
-    public Response list() {
+    public Response list(@QueryParam("callback") String cb) {
+
         Gson gson = new GsonBuilder().serializeNulls().create();
-        return Response.status(200).entity(gson.toJson(manager.getThreadList())).build();
+        String ret = gson.toJson(manager.getThreadList());
+        if (cb != null) ret = cb + "(" + ret + ")";
+        return Response.status(200).entity(ret).build();
     }
 
     @GET
     @Path("dump/{id}")
     @Produces(MediaType.TEXT_PLAIN+ ";charset=utf-8")
-    public Response dump(@PathParam("id") long id) {
-        return Response.status(200).entity(manager.toString(id)).build();
+    public Response dump(@QueryParam("callback") String cb, @PathParam("id") long id) {
+
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        return Response.status(200).entity(gson.toJson(manager.toString(id))).build();
     }
 
     /**
@@ -44,7 +46,12 @@ public class ThreadInfo {
     @GET
     @Path("info/{id}")
     @Produces(MediaType.APPLICATION_JSON+ ";charset=utf-8")
-    public Response info(@PathParam("id") long id) {
-        return Response.status(200).entity(manager.toJSONString(id)).build();
+    public Response info(@PathParam("id") long id, @QueryParam("callback") String cb) {
+
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        String ret = gson.toJson(manager.toJSONString(id));
+        if (cb != null) ret = cb + "(" + ret + ")";
+
+        return Response.status(200).entity(ret).build();
     }
 }
