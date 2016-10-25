@@ -23,8 +23,8 @@ public class InfoMonitor extends InfoLock implements JSONAware {
     }
 
     public String toString() {
-        return super.toString() + "'\nlockedStackDepth : " + monitorInfo.getLockedStackDepth() + "\n" +
-                "lockedStackFrame : " + monitorInfo.getLockedStackFrame();
+        return super.toString() + "'\nlocked_stack_depth : " + monitorInfo.getLockedStackDepth() + "\n" +
+                "locked_stack_frame : " + monitorInfo.getLockedStackFrame();
     }
 
     /**
@@ -39,8 +39,8 @@ public class InfoMonitor extends InfoLock implements JSONAware {
     public JSONObject toJSONObject() {
         JSONObject ret = new JSONObject();
         ret.putAll(super.toJSONObject());
-        ret.put("lockedStackDepth", monitorInfo.getLockedStackDepth());
-        ret.put("lockedStackFrame", monitorInfo.getLockedStackFrame());
+        ret.put("locked_stack_depth", monitorInfo.getLockedStackDepth());
+        ret.put("locked_stack_frame", monitorInfo.getLockedStackFrame().toString());
 
         return ret;
     }

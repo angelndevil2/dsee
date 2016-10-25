@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import java.lang.management.LockInfo;
 import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
+import java.util.ArrayList;
 
 /**
  * Delegate {@link ThreadInfo}
@@ -60,7 +61,7 @@ public class InfoThread implements JSONAware {
 
         ret.put("id", threadInfo.getThreadId());
         ret.put("name", threadInfo.getThreadName());
-        ret.put("state", threadInfo.getThreadState());
+        ret.put("state", threadInfo.getThreadState().toString());
 
         ret.put("blocked_count",threadInfo.getBlockedCount());
         ret.put("blocked_time", threadInfo.getBlockedTime());
@@ -96,47 +97,27 @@ public class InfoThread implements JSONAware {
 
     /**
      *
-     * @return {@link InfoMonitor} array
+     * @return {@link InfoMonitor} array list
      */
-    public InfoMonitor[] getLockedMonitors() {
+    @SuppressWarnings("unchecked")
+    public JSONArray getLockedMonitors() {
 
-        final InfoMonitor[] infoMonitors;
+        final JSONArray infoMonitors = new JSONArray();
         final MonitorInfo[] lockedMonitors = threadInfo.getLockedMonitors();
-        if (lockedMonitors.length > 0) {
-
-            infoMonitors = new InfoMonitor[lockedMonitors.length];
-            int idx = 0;
-            for (MonitorInfo mi : lockedMonitors) {
-                infoMonitors[idx] = new InfoMonitor(mi);
-                idx++;
-            }
-
-            return infoMonitors;
-        }
-
-        return null;
+        for (MonitorInfo mi : lockedMonitors) infoMonitors.add(new InfoMonitor(mi));
+        return infoMonitors;
     }
 
     /**
      *
-     * @return {@link InfoLock} array , ach of which represents an ownable synchronizer currently locked by the thread associated with this ThreadInfo
+     * @return {@link InfoLock} array  list, ach of which represents an ownable synchronizer currently locked by the thread associated with this ThreadInfo
      */
-    public InfoLock[] getLockedSynchronizers() {
-        final InfoLock[] infoLocks;
-        final LockInfo[] lockInfos = threadInfo.getLockedSynchronizers();
-        if (lockInfos.length > 0) {
-
-            infoLocks = new InfoMonitor[lockInfos.length];
-            int idx = 0;
-            for (LockInfo li : lockInfos) {
-                infoLocks[idx] = new InfoLock(li);
-                idx++;
-            }
-
-            return infoLocks;
-        }
-
-        return null;
+    @SuppressWarnings("unchecked")
+    public JSONArray getLockedSynchronizers() {
+        final JSONArray infoLocks = new JSONArray();
+        final LockInfo[] locks = threadInfo.getLockedSynchronizers();
+        for (LockInfo li : locks) infoLocks.add(new InfoLock(li));
+        return infoLocks;
     }
 
 }
